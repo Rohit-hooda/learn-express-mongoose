@@ -1,8 +1,11 @@
 let BookInstance = require('../models/bookinstance');
 
-xports.show_all_books_status = async (res) =>  {
-  BookInstance.find({status: "Available"}).populate('book').then(list_bookInstances => {
-    res.send(list_bookInstances.map((instance) => {
-      return instance.book.title + " : " + instance.status;
-    }))
-  });
+BookInstance.find({'status': {$eq: 'Available'}})
+.populate('book')
+.exec()
+.then(list_bookinstances => {
+  res.send(list_bookinstances.map(function(bookInstance) {
+    return bookInstance.book.title + " : " + bookInstance.status
+  }));
+})
+.catch(err => res.send('Status not found'));
